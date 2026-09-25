@@ -65,7 +65,7 @@ for cer = 1 : num_CERs % 3 for debug, RF_A == +2.
         A_CER_start = 1 + offset;
         B_CER_start = 1;
         A_CER_end = len_seqA;
-        B_CER_end = len_seqA - offset; % not sure about '- offset'. ln_seqB - (offset - (ln_seqA-ln_seqB)) = ln_seqB - (offset - ln_seqA + ln_seqB) = ln_seqB - offset + ln_seqA - ln_seqB = ln_seqA - offset.
+        B_CER_end = len_seqA - offset; % End index of the overlapping region in sequence B.
 
         % Calculate rf of B:
         if rem(A_CER_start, 3)==1
@@ -106,7 +106,7 @@ for cer = 1 : num_CERs % 3 for debug, RF_A == +2.
         end
     end
 
-    % Check lengths - should always match (DEBUG):
+    % Check lengths - should always match:
     A_CER = length(A_CER_start : A_CER_end); % in terms of nts.
     B_CER = length(B_CER_start : B_CER_end);
 
@@ -196,7 +196,7 @@ for cer = 1 : num_CERs % 3 for debug, RF_A == +2.
     triplet_match_array(1:3,:) = ( optimisation_array(1:3,:) == optimisation_array(4:6,:) ); % SB 05/08: for optimising seqB.
     triplet_match_array(4:6,:) = ( optimisation_array(7:9,:) == optimisation_array(10:12,:) ); % SB 05/08: for optimising seqA.
     
-    optimisationLen = size(triplet_match_array,2); % length of CER in terms of number of codons. % adjusted for variable CER length. % adjusted for RFs (with padding, see above). SB 05/08: should be /3.
+    optimisationLen = size(triplet_match_array,2);
     number_of_seqs = size(triplet_match_array,1) / 3;
 
     %% Identify codon pairs requiring substitution:
@@ -270,8 +270,8 @@ for cer = 1 : num_CERs % 3 for debug, RF_A == +2.
             optimisation_array(10:12,:) = reshape(B_padded_new_nts, 3, []);  % B updates (1st iteration) carry forward to A updates (2nd iteration).
         end
 
-        triplet_match_array(1:3,:) = ( optimisation_array(1:3,:) == optimisation_array(4:6,:) ); % SB 05/08: for optimising seqB.
-        triplet_match_array(4:6,:) = ( optimisation_array(7:9,:) == optimisation_array(10:12,:) ); % SB 05/08: for optimising seqA.
+        triplet_match_array(1:3,:) = ( optimisation_array(1:3,:) == optimisation_array(4:6,:) ); 
+        triplet_match_array(4:6,:) = ( optimisation_array(7:9,:) == optimisation_array(10:12,:) ); 
 
     end
 
@@ -280,7 +280,6 @@ for cer = 1 : num_CERs % 3 for debug, RF_A == +2.
     % triplet_match_array(4:6,:).
     
     %% Calculate new match percentage:
-    % This should be a function.
     new_opt_window_A = reshape( optimisation_array(7:9,:), 1, [] ); 
     new_opt_window_B = reshape( optimisation_array(10:12,:), 1, [] );
     if offset < 0 % ref = 'B'
@@ -304,9 +303,9 @@ for cer = 1 : num_CERs % 3 for debug, RF_A == +2.
     %% Produce new match BARCODE:
     match_array_new = ( new_CER_window_A(cer,:) == new_CER_window_B(cer,:) );
     % match_array_bases = reshape(match_array_new,1,[]); % Reshape from codon triplets to nucleotide sequence for barcode.
-    % N = numel(nt_match_array); % SB : is this superfluous? I feel like there are multiple identical calculations happening repeatedly in place of simply cerLen, or even calculating earlier. This is also [cerLen * 3].
+    % N = numel(nt_match_array); 
     
-    figure(fig_start_idx+3); % PLOT MATCH ARRAY as DNA 'barcode'. SB 21/06/2026: do I want to add what pct matches increased from?
+    figure(fig_start_idx+3); % PLOT MATCH ARRAY as DNA 'barcode'. 
     for k = 1:N
         if match_array_new(k)
             rectangle('Position', [k 0 1 1], 'FaceColor', pink, 'EdgeColor', 'none'); % green match

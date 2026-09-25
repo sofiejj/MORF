@@ -33,7 +33,7 @@ for cer = 1 : num_CERs
 
    offset = bestOffset(cer);
     frac = bestFrac(cer);
-    if offset < 0 % SB: seqB starts before seqA, seqA considered shifted.
+    if offset < 0 % seqB starts before seqA, seqA considered shifted.
         fprintf('SeqB starts before seqA.\n');
         ref_seq = num_seqB; 
         ref = 'B';
@@ -119,7 +119,7 @@ for cer = 1 : num_CERs
     plot(1:len_seqA,num_seqA);hold on;
     plot(1+offset:offset+len_seqB,num_seqB);%plot(A_CER_start+offset:A_CER_start+offset+ln_seqB-1, num_seqB);
     legend('GFP (M62653.1)','DsRed'); % OFFSET in no. nucleotides where offset = +-1 is A(+-2), A(1)=A(-1).
-    title(sprintf('Visual of CER %.f Location, OFFSET %.f, (%.2f%% Matching Bases) for GFP and DsRed (Sliding Hamming Similarity)',cer,offset,bestPercent)); % should start idx relative to seqA be provided?
+    title(sprintf('Visual of CER %.f Location, OFFSET %.f, (%.2f%% Matching Bases) for GFP and DsRed (Sliding Hamming Similarity)',cer,offset,bestPercent)); 
     xlabel('Base Index');ylabel('Numeric Base Value From Alphabet Key');
 
     CER_window_A = num_seqA(A_CER_start:A_CER_end); 
@@ -161,7 +161,7 @@ for cer = 1 : num_CERs
     optimisation_codB_setOne = reshape(CER_window_B_extension,3,[]);
     optimisation_codA_setTwo = reshape(CER_window_A_extension,3,[]);
     optimisation_codB_setTwo = reshape(CER_window_B_padded,3,[]);
-    % CER_window_A_triplet = reshape(CER_window_A_padded,3,[]); % SB 27/07: codon fold inc. PADDING.
+    % CER_window_A_triplet = reshape(CER_window_A_padded,3,[]); % codon fold inc. PADDING.
     % CER_window_B_triplet = reshape(CER_window_B_padded,3,[]);
     optimisation_array = [optimisation_codA_setOne; optimisation_codB_setOne; optimisation_codA_setTwo; optimisation_codB_setTwo]; % 'setOne' for optimising seqB, 'setTwo' for optimising seqA.
     % CER_cod_windows = [CER_window_A_triplet; CER_window_B_triplet]; % the CER folded into TRIPLETS, inc. padding. 
@@ -173,12 +173,12 @@ for cer = 1 : num_CERs
     title(sprintf('Closeup of Co-Encoding Region %.f, OFFSET %.f',cer,offset));xlabel('Base Index');ylabel('Numeric Base Value from Alphabet Key');legend('GFP (M62653.1)','dsRed');
     
     %% CALCULATE nucleotide matches and mismatches:
-    nt_match_array = ( CER_window_A == CER_window_B ); % output: logical array, 1 = NUCLEOTIDE MATCH location, 0 = NUCLEOTIDE MISMATCH location. SB 29/07: CORRECT.
+    nt_match_array = ( CER_window_A == CER_window_B ); % output: logical array, 1 = NUCLEOTIDE MATCH location, 0 = NUCLEOTIDE MISMATCH location.
     
     nt_match_array = nt_match_array(:);  % ensure column vector
     N = numel(nt_match_array); 
     
-    figure(fig_start_idx+2); % PLOT MATCH ARRAY as DNA 'barcode'. %SB 21/06/2026: add offset.
+    figure(fig_start_idx+2); % PLOT MATCH ARRAY as DNA 'barcode'. % add offset.
     for k = 1:N
         if nt_match_array(k)
             rectangle('Position', [k 0 1 1], 'FaceColor', purple, 'EdgeColor', 'none'); % green match
@@ -193,8 +193,8 @@ for cer = 1 : num_CERs
 
 %% CODON match array (inc. padding & extensions, see lines 127-139):
 
-    triplet_match_array(1:3,:) = ( optimisation_array(1:3,:) == optimisation_array(4:6,:) ); % SB 05/08: for optimising seqB.
-    triplet_match_array(4:6,:) = ( optimisation_array(7:9,:) == optimisation_array(10:12,:) ); % SB 05/08: for optimising seqA.
+    triplet_match_array(1:3,:) = ( optimisation_array(1:3,:) == optimisation_array(4:6,:) ); % for optimising seqB.
+    triplet_match_array(4:6,:) = ( optimisation_array(7:9,:) == optimisation_array(10:12,:) ); % for optimising seqA.
     
     optimisationLen = size(triplet_match_array,2);
     number_of_seqs = size(triplet_match_array,1) / 3;
@@ -223,14 +223,14 @@ for cer = 1 : num_CERs
                     synIdxA       = codonTable.synonymIdx{idxA};
                     synCodonsNumA = codonTable.codonsNumeric(:, synIdxA);
 
-                    synCodonsNumB = codB; % SB 05/08: loop over CER A, hold B fixed.
+                    synCodonsNumB = codB; % loop over CER A, hold B fixed.
                 else % n==1
                     % GET codon B 'synonyms':
                     idxB = codonTable.codonIndexNum(codonTable.makeKey(codB));
                     synIdxB       = codonTable.synonymIdx{idxB};
                     synCodonsNumB = codonTable.codonsNumeric(:, synIdxB);
 
-                    synCodonsNumA = codA; % SB 05/08: loop over CER B, hold A fixed.
+                    synCodonsNumA = codA; % loop over CER B, hold A fixed.
                 end
         
                 % Possible outcomes: - perfect sub, better sub, no sub.
@@ -241,7 +241,7 @@ for cer = 1 : num_CERs
             
                 if bestMatches > origMatches
                     % Apply improved codons
-                    optimisation_array(top_row:bottom_row,i) = bestA; % SB 05/08: when looping over B, A should remain unchanged, and vice versa.
+                    optimisation_array(top_row:bottom_row,i) = bestA; % when looping over B, A should remain unchanged, and vice versa.
                     optimisation_array(top_row+3:bottom_row+3,i) = bestB; %14/09: for n=1, A fixed, B subbed (rows 4:6 in opt array).
 
                     fprintf('New codon pair at optimisation index %.f\n',i); 
@@ -294,7 +294,7 @@ for cer = 1 : num_CERs
     opt_num_seqA(cer,:) = [num_seqA(1:A_CER_start-1) new_CER_window_A(cer,:) num_seqA(A_CER_end+1:end)]; %16/09: struct here?
     opt_num_seqB(cer,:) = [num_seqB(1:B_CER_start-1) new_CER_window_B(cer,:) num_seqB(B_CER_end+1:end)];
     new_matches_nt = sum(new_CER_window_A(cer,:) == new_CER_window_B(cer,:));   % scalar
-    total   = numel(new_CER_window_A(cer,:));                  % = 3 * L % SB : is this not simply cerLen? Not exactly: it is [cerLen * 3], i.e. length of nt seq.
+    total   = numel(new_CER_window_A(cer,:));                  % = 3 * L
     
     pct(cer) = 100 * (new_matches_nt / total); % improved percentage matches for CER cer.
     

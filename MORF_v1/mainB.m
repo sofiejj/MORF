@@ -1,4 +1,4 @@
-% Main, attempt 2.
+% MORF proof-of-concept implementation.
 % INDEXING NOTE: if first element in A is index 1 for forward reading, then
 % first element of A when reading backwards is -1.
 % nt = nucleotides.

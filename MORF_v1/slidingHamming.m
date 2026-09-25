@@ -54,13 +54,13 @@ function [bestOffset, bestFrac, A, B] = slidingHamming(seqA, seqB, N, L)
         % iA = (1 + d) : (d + nB);
         % iB = 1:nB;
         len_CER(1,k) = length(iA); % Check that these do not go below L.
-        len_CER(2,k) = length(iB); % track length iB for DEBUG.
+        len_CER(2,k) = length(iB); % Track CER length.
         matchFrac(k) = sum(A(iA) == B(iB)) / len_CER(1,k); % checks for nucleotide matches/mismatches.
     end
 
     % What if N > length(matchFrac)?
     if N <= length(matchFrac)
-        [bestFrac, idx] = maxk(matchFrac,N); % great that matchFrac is a list.
+        [bestFrac, idx] = maxk(matchFrac,N);
         bestOffset = offsets(idx);
     else 
         error('Number of CERs requested exceeds total number of CERs identified with the given parameters.\n');

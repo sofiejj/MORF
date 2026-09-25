@@ -25,8 +25,8 @@ function [bestOffset, bestFrac, A, B] = slidingHamming(seqA, seqB, N, L)
         error('This version assumes seqB is not longer than seqA.');
     end
     % offsets = location of seqB START codon relative to seqA START.
-    offsets = L - nB : nA - L; % SB: this is all wrong! I want L to be minimum OVERLAP length.
-    %offsets   = 0 : (nA - nB); % THIS keeps the sliding seq B entirely within seq A.
+    offsets = L - nB : nA - L; 
+    
     matchFrac = zeros(size(offsets));
 
     for k = 1:numel(offsets) % IDENTIFYING INDICES, iA and iB, WITHIN CERs given by offsets.
@@ -37,7 +37,7 @@ function [bestOffset, bestFrac, A, B] = slidingHamming(seqA, seqB, N, L)
             iA = 1 : (d + nB);
             iB = (-d + 1) : nB;
 
-        elseif d > (nA - nB) % if seqB ENDS AFTER seqA. SB 21/06/2026: this currently isn't quite right.
+        elseif d > (nA - nB) % if seqB ENDS AFTER seqA.
 
             iA = (1 + d) : nA; % The length of these should not go below L.
             iB = 1 : (nA - d);

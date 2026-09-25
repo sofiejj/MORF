@@ -145,4 +145,4 @@ A DOI and preprint link will be added here following publication of the preprint
 
 ## License
 
-License information to be added.
+This project is licensed under the MIT License. See the `LICENSE` file for details.

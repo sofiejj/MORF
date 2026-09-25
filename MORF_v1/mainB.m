@@ -29,7 +29,7 @@ len_seqB = numel(num_seqB);
 % Loop over CER identifiers (i.e. 1 : num_CERs):
 %To keep per CER iteration: cer, num_CERs, bestOffset, bestFrac, num_seqA,
 %num_seqB, len_seqA, len_seqB
-for cer = 1 : num_CERs % 3 for debug, RF_A == +2.
+for cer = 1 : num_CERs
 
    offset = bestOffset(cer);
     frac = bestFrac(cer);
